@@ -9,6 +9,7 @@ const CreateTeamSchema = z.object({
   name: z.string().min(1),
   shortName: z.string().optional(),
   logoFileId: z.string().nullable().optional(),
+  group: z.string().optional(),
 });
 
 function mapTeam(t: any) {
@@ -17,6 +18,7 @@ function mapTeam(t: any) {
     name: t.name,
     shortName: t.shortName || "",
     logoFileId: t.logoFileId ? String(t.logoFileId) : null,
+    group: t.group || "A",
     members: (t.members || []).map((m: any) => ({
       _id: String(m._id),
       name: m.name,
@@ -53,6 +55,7 @@ export async function POST(req: Request) {
     name: parsed.data.name,
     shortName: parsed.data.shortName || "",
     logoFileId,
+    group: parsed.data.group || "A",
     members: [],
   });
 

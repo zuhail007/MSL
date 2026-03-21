@@ -13,6 +13,7 @@ export default async function AdminTeamsPage() {
     name: t.name,
     shortName: t.shortName || "",
     logoFileId: t.logoFileId ? String(t.logoFileId) : null,
+    group: t.group || "A",
     memberCount: (t.members || []).length,
   }));
 

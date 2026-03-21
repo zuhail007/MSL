@@ -12,17 +12,37 @@ html {
 }
 
 body {
-  background: radial-gradient(1200px circle at 20% 10%, rgba(34, 197, 94, 0.18), transparent 60%),
-    radial-gradient(900px circle at 80% 30%, rgba(59, 130, 246, 0.12), transparent 50%),
-    linear-gradient(180deg, #031b19 0%, #011110 100%);
-  color: #e6f7f6;
+  background: radial-gradient(1200px circle at 20% 10%, rgba(251, 146, 60, 0.25), transparent 60%),
+    radial-gradient(900px circle at 80% 30%, rgba(249, 115, 22, 0.20), transparent 50%),
+    linear-gradient(180deg, #280f06 0%, #180b04 100%);
+  color: #fff7ed;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   animation: pageFade 180ms ease-out;
 }
 
 .pitch {
-  background: linear-gradient(180deg, rgba(6, 75, 67, 0.55) 0%, rgba(5, 46, 43, 0.15) 100%);
+  background: linear-gradient(180deg, rgba(103, 43, 12, 0.65) 0%, rgba(81, 27, 10, 0.20) 100%);
+}
+
+/* Scrollbar theme */
+::-webkit-scrollbar-track {
+  background: #1b0d06;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #f97316, #ea580c);
+  border-radius: 999px;
+  border: 2px solid #1b0d06;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #fb923c, #f97316);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #f97316 #1b0d06;
 }
 
 .card {

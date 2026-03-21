@@ -8,6 +8,7 @@ type AdminTeam = {
   name: string;
   shortName: string;
   logoFileId: string | null;
+  group: string;
   memberCount: number;
 };
 
@@ -21,11 +22,12 @@ async function uploadImage(file: File) {
 }
 
 export default function AdminTeamsClient({ initialTeams }: { initialTeams: AdminTeam[] }) {
-  const [teams, setTeams] = useState<AdminTeam[]>(initialTeams);
+  const [teams, setTeams] = useState<AdminTeam[]>(initialTeams.map(t => ({ ...t, group: t.group || "A" })));
   const [loading, setLoading] = useState(false);
 
   const [name, setName] = useState("");
   const [shortName, setShortName] = useState("");
+  const [group, setGroup] = useState("A");
   const [logoFile, setLogoFile] = useState<File | null>(null);
 
   const canCreate = useMemo(() => name.trim().length > 0, [name]);
@@ -42,6 +44,7 @@ export default function AdminTeamsClient({ initialTeams }: { initialTeams: Admin
             name: t.name,
             shortName: t.shortName,
             logoFileId: t.logoFileId,
+            group: t.group || "A",
             memberCount: (t.members || []).length,
           }))
         );
@@ -60,6 +63,7 @@ export default function AdminTeamsClient({ initialTeams }: { initialTeams: Admin
         name: t.name,
         shortName: t.shortName,
         logoFileId: t.logoFileId,
+        group: t.group || "A",
         memberCount: (t.members || []).length,
       }))
     );
@@ -79,12 +83,13 @@ export default function AdminTeamsClient({ initialTeams }: { initialTeams: Admin
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ name: name.trim(), shortName: shortName.trim(), logoFileId }),
+        body: JSON.stringify({ name: name.trim(), shortName: shortName.trim(), logoFileId, group }),
       });
       if (!res.ok) throw new Error("Create failed");
 
       setName("");
       setShortName("");
+      setGroup("A");
       setLogoFile(null);
       refresh();
     } catch (err: any) {
@@ -137,6 +142,19 @@ export default function AdminTeamsClient({ initialTeams }: { initialTeams: Admin
               onChange={(e) => setShortName(e.target.value)}
               placeholder="e.g. EAG"
             />
+          </label>
+          <label className="block">
+            <div className="mb-1 text-xs font-bold text-white/60">Group</div>
+            <select
+              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-white/20"
+              value={group}
+              onChange={(e) => setGroup(e.target.value)}
+            >
+              <option value="A">Group A</option>
+              <option value="B">Group B</option>
+              <option value="C">Group C</option>
+              <option value="D">Group D</option>
+            </select>
           </label>
 
           <label className="block md:col-span-2">

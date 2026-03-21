@@ -21,6 +21,8 @@ export default async function AdminSettingsPage() {
       rawSettings.about ||
         "MSN is hosted by the MSL League. Follow teams, fixtures, results and champions in one place."
     ),
+    logo: String(rawSettings.logo || ""),
+    tournamentLogo: String(rawSettings.tournamentLogo || ""),
     pointsRules: {
       win: Number(rawSettings.pointsRules?.win ?? 3),
       draw: Number(rawSettings.pointsRules?.draw ?? 1),

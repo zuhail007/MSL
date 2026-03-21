@@ -10,6 +10,8 @@ const LeagueSettingsSchema = new mongoose.Schema(
       default:
         "MSN is hosted by the MSL League. Follow teams, fixtures, results and champions in one place.",
     },
+    logo: { type: String, default: "" }, // fileId for the logo image
+    tournamentLogo: { type: String, default: "" }, // fileId for the tournament logo image
     pointsRules: {
       win: { type: Number, default: 3 },
       draw: { type: Number, default: 1 },

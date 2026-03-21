@@ -29,9 +29,10 @@ export function computeStandings(args: {
     _id: Types.ObjectId | string;
     name: string;
     logoFileId?: Types.ObjectId | string | null;
+    group?: string;
   }>;
   pointsRules?: { win: number; draw: number; loss: number };
-}) {
+}): Map<string, StandingRow[]> {
   const { fixtures, teams, pointsRules } = args;
   const winPoints = pointsRules?.win ?? 3;
   const drawPoints = pointsRules?.draw ?? 1;

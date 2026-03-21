@@ -8,6 +8,8 @@ const SettingsUpdateSchema = z.object({
   siteTitle: z.string().min(1).optional(),
   tagline: z.string().min(1).optional(),
   about: z.string().min(1).optional(),
+  logo: z.string().optional(),
+  tournamentLogo: z.string().optional(),
   pointsRules: z
     .object({
       win: z.number().int().nonnegative().optional(),
@@ -37,6 +39,8 @@ export async function PATCH(req: Request) {
   if (parsed.data.siteTitle !== undefined) update.siteTitle = parsed.data.siteTitle;
   if (parsed.data.tagline !== undefined) update.tagline = parsed.data.tagline;
   if (parsed.data.about !== undefined) update.about = parsed.data.about;
+  if (parsed.data.logo !== undefined) update.logo = parsed.data.logo;
+  if (parsed.data.tournamentLogo !== undefined) update.tournamentLogo = parsed.data.tournamentLogo;
   if (parsed.data.pointsRules !== undefined) update.pointsRules = parsed.data.pointsRules;
 
   await LeagueSettingsModel.findOneAndUpdate({ season: "default" }, update, { upsert: true });

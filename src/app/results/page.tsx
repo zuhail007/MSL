@@ -15,12 +15,13 @@ export default async function ResultsPage() {
   const settings = (await LeagueSettingsModel.findOne({ season: "default" }).lean()) as any;
   const pointsRules = settings?.pointsRules || { win: 3, draw: 1, loss: 0 };
 
-  const standings = computeStandings({
+  const groupStandings = computeStandings({
     fixtures,
     teams: teams.map((t: any) => ({
       _id: t._id,
       name: t.name,
       logoFileId: t.logoFileId,
+      group: t.group,
     })),
     pointsRules,
   });
@@ -34,54 +35,58 @@ export default async function ResultsPage() {
       <h1 className="text-3xl font-black tracking-tight text-white">Results</h1>
 
       <div className="grid gap-4 lg:grid-cols-5">
-        <div className="lg:col-span-3 card p-5">
-          <h2 className="text-xl font-black text-white">League Table</h2>
-          <div className="mt-4 overflow-x-auto">
-            <table className="w-full min-w-[520px] border-separate border-spacing-y-2">
-              <thead className="text-xs uppercase text-white/50">
-                <tr>
-                  <th className="text-left">#</th>
-                  <th className="text-left">Team</th>
-                  <th className="text-right">Pld</th>
-                  <th className="text-right">W</th>
-                  <th className="text-right">D</th>
-                  <th className="text-right">L</th>
-                  <th className="text-right">GD</th>
-                  <th className="text-right">Pts</th>
-                </tr>
-              </thead>
-              <tbody className="text-sm">
-                {standings.map((r: any, idx: number) => (
-                  <tr key={r.teamId} className="text-white/90">
-                    <td>{idx + 1}</td>
-                    <td>
-                      <div className="flex items-center gap-3">
-                        {r.logoFileId ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={`/api/images/${r.logoFileId}`}
-                            alt={r.teamName}
-                            className="h-8 w-8 rounded-lg object-contain"
-                          />
-                        ) : (
-                          <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-[11px] font-black text-white/60">
-                            T
-                          </span>
-                        )}
-                        <span className="font-extrabold">{r.teamName}</span>
-                      </div>
-                    </td>
-                    <td className="text-right">{r.played}</td>
-                    <td className="text-right">{r.won}</td>
-                    <td className="text-right">{r.drawn}</td>
-                    <td className="text-right">{r.lost}</td>
-                    <td className="text-right">{r.gd}</td>
-                    <td className="text-right font-black text-emerald-300">{r.points}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <div className="lg:col-span-3 space-y-6">
+          {Array.from(groupStandings.entries()).map(([group, standings]) => (
+            <div key={group} className="card p-5">
+              <h2 className="text-xl font-black text-white">Group {group}</h2>
+              <div className="mt-4 overflow-x-auto">
+                <table className="w-full min-w-[520px] border-separate border-spacing-y-2">
+                  <thead className="text-xs uppercase text-white/50">
+                    <tr>
+                      <th className="text-left">#</th>
+                      <th className="text-left">Team</th>
+                      <th className="text-right">Pld</th>
+                      <th className="text-right">W</th>
+                      <th className="text-right">D</th>
+                      <th className="text-right">L</th>
+                      <th className="text-right">GD</th>
+                      <th className="text-right">Pts</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-sm">
+                    {standings.map((r: any, idx: number) => (
+                      <tr key={r.teamId} className="text-white/90">
+                        <td>{idx + 1}</td>
+                        <td>
+                          <div className="flex items-center gap-3">
+                            {r.logoFileId ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={`/api/images/${r.logoFileId}`}
+                                alt={r.teamName}
+                                className="h-8 w-8 rounded-lg object-contain"
+                              />
+                            ) : (
+                              <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-[11px] font-black text-white/60">
+                                T
+                              </span>
+                            )}
+                            <span className="font-extrabold">{r.teamName}</span>
+                          </div>
+                        </td>
+                        <td className="text-right">{r.played}</td>
+                        <td className="text-right">{r.won}</td>
+                        <td className="text-right">{r.drawn}</td>
+                        <td className="text-right">{r.lost}</td>
+                        <td className="text-right">{r.gd}</td>
+                        <td className="text-right font-black text-emerald-300">{r.points}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ))}
         </div>
 
         <div className="lg:col-span-2 card p-5">

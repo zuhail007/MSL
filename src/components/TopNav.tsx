@@ -28,7 +28,7 @@ export async function TopNav() {
     <header className="mx-auto max-w-6xl px-4 pt-6">
       <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur">
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/15 bg-gradient-to-br from-emerald-500/30 to-sky-500/20 shadow-glow">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/15 bg-gradient-to-br from-orange-500/30 to-orange-700/30 shadow-glow">
             <span className="text-lg font-black tracking-tight">MSL</span>
           </div>
           <div>
@@ -45,6 +45,7 @@ export async function TopNav() {
             <NavLink href="/teams" label="Teams" />
             <NavLink href="/fixtures" label="Fixtures" />
             <NavLink href="/results" label="Results" />
+            <NavLink href="/knockout" label="Knockout" />
             <NavLink href="/champions" label="Champions" />
             {isAdminLoggedIn ? (
               <NavLink href="/admin/dashboard" label="Admin" />
