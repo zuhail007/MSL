@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
+import { ObjectId } from "mongodb";
 import { ChampionModel } from "@/models/Champion";
 
 const MONGO_URI = process.env.MONGODB_URI!;
@@ -41,7 +42,7 @@ export async function POST(req: Request) {
     const newChampion = await ChampionModel.create({
       season: body.season,
       entries: body.entries.map((e: any) => ({
-        teamId: e.teamId, // ✅ NO manual ObjectId conversion
+        teamId: new ObjectId(e.teamId),
       })),
     });
 
