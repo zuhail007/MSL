@@ -13,14 +13,11 @@ export default async function HomePage() {
         <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-bold text-white/80">
           MATCH DAY READY
         </div>
-        <div className="mt-4 flex items-center gap-4">
-          {settings.logo && (
-            <img src={`/api/images/${settings.logo}`} alt="League Logo" className="h-16 w-16 object-contain" />
-          )}
+        <div className="mt-4 flex flex-col items-center gap-4">
           {settings.tournamentLogo && (
-            <img src={`/api/images/${settings.tournamentLogo}`} alt="Tournament Logo" className="h-16 w-16 object-contain" />
+            <img src={`/api/images/${settings.tournamentLogo}`} alt="Tournament Logo" className="h-20 w-20 object-contain rounded-lg" />
           )}
-          <div>
+          <div className="text-center">
             <h1 className="text-4xl font-black tracking-tight text-white">
               {settings.siteTitle}
             </h1>
