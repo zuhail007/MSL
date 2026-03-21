@@ -17,7 +17,8 @@ const FixtureSchema = new mongoose.Schema(
 
 FixtureSchema.index({ season: 1, homeTeamId: 1, awayTeamId: 1, scheduledAt: 1 });
 
-export const FixtureModel = mongoose.models.Fixture || mongoose.model("Fixture", FixtureSchema);
+export const FixtureModel: any =
+  mongoose.models.Fixture || mongoose.model("Fixture", FixtureSchema);
 
 export { FixtureSchema };
 

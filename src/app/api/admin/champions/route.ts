@@ -19,7 +19,7 @@ const UpdateChampionsSchema = z.object({
 export async function GET() {
   await requireAdminToken();
   await connectToDatabase();
-  const doc = await ChampionModel.findOne({ season: "default" }).lean();
+  const doc = (await ChampionModel.findOne({ season: "default" }).lean()) as any;
   return NextResponse.json(
     doc
       ? {
@@ -46,11 +46,11 @@ export async function PUT(req: Request) {
     photoFileId: e.photoFileId ? new ObjectId(String(e.photoFileId)) : null,
   }));
 
-  const updated = await ChampionModel.findOneAndUpdate(
+  const updated = (await ChampionModel.findOneAndUpdate(
     { season: "default" },
     { entries },
     { upsert: true, new: true }
-  ).lean();
+  ).lean()) as any;
 
   return NextResponse.json({ ok: true, entries: updated?.entries || [] });
 }

@@ -18,7 +18,7 @@ const ChampionSchema = new mongoose.Schema(
 
 export type ChampionDoc = mongoose.InferSchemaType<typeof ChampionSchema>;
 
-export const ChampionModel =
+export const ChampionModel: any =
   mongoose.models.Champion || mongoose.model("Champion", ChampionSchema);
 
 export { ChampionSchema };

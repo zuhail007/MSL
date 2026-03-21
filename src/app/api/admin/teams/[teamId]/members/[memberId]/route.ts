@@ -2,13 +2,13 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { ObjectId } from "mongodb";
 import { connectToDatabase } from "@/lib/mongoose";
-import { TeamModel, type TeamMemberRole } from "@/models/Team";
+import { TeamModel } from "@/models/Team";
 import { requireAdminToken } from "@/lib/adminAccess";
 
 const MemberUpdateSchema = z.object({
   name: z.string().min(1).optional(),
   position: z.string().min(1).optional(),
-  role: z.enum(["owner", "keyplayer", "player"] satisfies TeamMemberRole[]).optional(),
+  role: z.enum(["owner", "keyplayer", "player"] as const).optional(),
   photoFileId: z.string().nullable().optional(),
 });
 

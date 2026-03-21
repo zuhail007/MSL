@@ -7,12 +7,12 @@ import { LeagueSettingsModel } from "@/models/LeagueSettings";
 export default async function ResultsPage() {
   await connectToDatabase();
 
-  const [teams, fixtures] = await Promise.all([
+  const [teams, fixtures] = (await Promise.all([
     TeamModel.find().lean(),
     FixtureModel.find({ season: "default" }).lean(),
-  ]);
+  ])) as any;
 
-  const settings = await LeagueSettingsModel.findOne({ season: "default" }).lean();
+  const settings = (await LeagueSettingsModel.findOne({ season: "default" }).lean()) as any;
   const pointsRules = settings?.pointsRules || { win: 3, draw: 1, loss: 0 };
 
   const standings = computeStandings({
