@@ -14,8 +14,7 @@ export async function GET() {
   try {
     await connectDB();
 
-    const champions = await ChampionModel.find()
-      .populate("entries.teamId");
+    const champions = await ChampionModel.find().populate("entries.teamId");
 
     return NextResponse.json(champions);
   } catch (err) {
@@ -30,7 +29,12 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
-    const newChampion = await ChampionModel.create(body);
+    const newChampion = await ChampionModel.create({
+      season: body.season,
+      entries: body.entries.map((e: any) => ({
+        teamId: new mongoose.Types.ObjectId(e.teamId),
+      })),
+    });
 
     return NextResponse.json(newChampion);
   } catch (err) {
