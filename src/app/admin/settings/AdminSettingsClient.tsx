@@ -132,8 +132,30 @@ export default function AdminSettingsClient({ initialSettings }: { initialSettin
                 className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
               />
               {logo && (
-                <div className="mt-2">
+                <div className="mt-2 flex items-center gap-2">
                   <img src={`/api/images/${logo}`} alt="League Logo" className="h-16 w-16 object-contain" />
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (confirm("Are you sure you want to delete the league logo?")) {
+                        try {
+                          setLogo("");
+                          await fetch("/api/admin/settings", {
+                            method: "PATCH",
+                            headers: { "Content-Type": "application/json" },
+                            credentials: "include",
+                            body: JSON.stringify({ logo: "" }),
+                          });
+                          alert("League logo deleted");
+                        } catch (err: any) {
+                          alert(err?.message || "Delete failed");
+                        }
+                      }
+                    }}
+                    className="rounded-lg bg-red-500/20 px-3 py-1 text-xs font-bold text-red-200 transition hover:bg-red-500/30"
+                  >
+                    Delete
+                  </button>
                 </div>
               )}
             </label>
@@ -156,8 +178,30 @@ export default function AdminSettingsClient({ initialSettings }: { initialSettin
                 className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
               />
               {tournamentLogo && (
-                <div className="mt-2">
+                <div className="mt-2 flex items-center gap-2">
                   <img src={`/api/images/${tournamentLogo}`} alt="Tournament Logo" className="h-16 w-16 object-contain" />
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (confirm("Are you sure you want to delete the tournament logo?")) {
+                        try {
+                          setTournamentLogo("");
+                          await fetch("/api/admin/settings", {
+                            method: "PATCH",
+                            headers: { "Content-Type": "application/json" },
+                            credentials: "include",
+                            body: JSON.stringify({ tournamentLogo: "" }),
+                          });
+                          alert("Tournament logo deleted");
+                        } catch (err: any) {
+                          alert(err?.message || "Delete failed");
+                        }
+                      }
+                    }}
+                    className="rounded-lg bg-red-500/20 px-3 py-1 text-xs font-bold text-red-200 transition hover:bg-red-500/30"
+                  >
+                    Delete
+                  </button>
                 </div>
               )}
             </label>
