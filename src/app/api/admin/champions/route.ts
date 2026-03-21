@@ -58,3 +58,19 @@ export async function PUT(req: Request) {
   return NextResponse.json({ ok: true, entries: updated?.entries || [] });
 }
 
+export async function DELETE(req: Request) {
+  await requireAdminToken();
+  await connectToDatabase();
+
+  const url = new URL(req.url);
+  const season = url.searchParams.get("season") || "default";
+
+  const result = await ChampionModel.deleteOne({ season });
+
+  if (result.deletedCount === 0) {
+    return NextResponse.json({ error: "Season not found" }, { status: 404 });
+  }
+
+  return NextResponse.json({ ok: true, deletedCount: result.deletedCount });
+}
+

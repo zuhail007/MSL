@@ -200,16 +200,36 @@ export default function AdminChampionsClient({
         </div>
       </div>
 
-      {/* 🏆 Champions List */}
-      <div>
-        <h2 className="text-xl font-semibold mb-3">Current Champions - {season}</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-semibold">Current Champions - {season}</h2>
+        <button
+          onClick={async () => {
+            if (!confirm(`Delete all champions for season ${season}?`)) return;
+            setLoading(true);
+            try {
+              const res = await fetch(`/api/admin/champions?season=${season}`, {
+                method: "DELETE",
+              });
+              if (!res.ok) throw new Error("Failed to delete season champions");
+              setChampion({ season, entries: [] });
+              alert("Season champions deleted");
+            } catch (err) {
+              console.error(err);
+              alert("Error deleting season champions");
+            } finally {
+              setLoading(false);
+            }
+          }}
+          className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm"
+          disabled={loading}
+        >
+          Clear season
+        </button>
+      </div>
 
-        {!champion?.entries?.length && (
-          <p className="text-gray-400">No champions yet</p>
-        )}
-
+      {champion?.entries?.length ? (
         <div className="space-y-3">
-          {champion?.entries?.map((entry: ChampionEntry, index: number) => {
+          {champion.entries.map((entry: ChampionEntry, index: number) => {
             const team = teams.find(t => t.id === entry.teamId);
             return (
               <div
@@ -236,7 +256,9 @@ export default function AdminChampionsClient({
             );
           })}
         </div>
-      </div>
+      ) : (
+        <p className="text-gray-400">No champions yet</p>
+      )}
     </div>
   );
 }
