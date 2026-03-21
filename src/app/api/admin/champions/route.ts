@@ -6,6 +6,7 @@ import { ChampionModel } from "@/models/Champion";
 import { requireAdminToken } from "@/lib/adminAccess";
 
 const UpdateChampionsSchema = z.object({
+  season: z.string().optional(),
   entries: z
     .array(
       z.object({
@@ -16,10 +17,12 @@ const UpdateChampionsSchema = z.object({
     .optional(),
 });
 
-export async function GET() {
+export async function GET(req: Request) {
   await requireAdminToken();
   await connectToDatabase();
-  const doc = (await ChampionModel.findOne({ season: "default" }).lean()) as any;
+  const url = new URL(req.url);
+  const season = url.searchParams.get("season") || "default";
+  const doc = (await ChampionModel.findOne({ season }).lean()) as any;
   return NextResponse.json(
     doc
       ? {
@@ -29,7 +32,7 @@ export async function GET() {
             photoFileId: e.photoFileId ? String(e.photoFileId) : null,
           })),
         }
-      : { season: "default", entries: [] }
+      : { season, entries: [] }
   );
 }
 
@@ -47,7 +50,7 @@ export async function PUT(req: Request) {
   }));
 
   const updated = (await ChampionModel.findOneAndUpdate(
-    { season: "default" },
+    { season: parsed.data.season || "default" },
     { entries },
     { upsert: true, new: true }
   ).lean()) as any;
