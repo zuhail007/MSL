@@ -109,21 +109,21 @@ export default function AdminTeamsClient({ initialTeams }: { initialTeams: Admin
   }
 
   return (
-    <section className="space-y-6">
-      <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+    <section className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col gap-1 sm:gap-2 md:flex-row md:items-end md:justify-between">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-white">Teams</h1>
-          <div className="mt-1 text-sm text-white/60">Add squads, upload logos, and manage members.</div>
+          <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white">Teams</h1>
+          <div className="mt-1 text-xs sm:text-sm text-white/60">Add squads, upload logos, and manage members.</div>
         </div>
       </div>
 
-      <div className="card p-5">
-        <h2 className="text-lg font-black text-white">Create Team</h2>
-        <form className="mt-4 grid gap-4 md:grid-cols-2" onSubmit={onCreate}>
+      <div className="card p-4 sm:p-5">
+        <h2 className="text-base sm:text-lg font-black text-white">Create Team</h2>
+        <form className="mt-3 sm:mt-4 grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2" onSubmit={onCreate}>
           <label className="block">
             <div className="mb-1 text-xs font-bold text-white/60">Team Name</div>
             <input
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/40 outline-none focus:border-white/20"
+              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs sm:text-sm text-white placeholder:text-white/40 outline-none focus:border-white/20"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Eagles FC"
@@ -132,27 +132,27 @@ export default function AdminTeamsClient({ initialTeams }: { initialTeams: Admin
           <label className="block">
             <div className="mb-1 text-xs font-bold text-white/60">Short Name (optional)</div>
             <input
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/40 outline-none focus:border-white/20"
+              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs sm:text-sm text-white placeholder:text-white/40 outline-none focus:border-white/20"
               value={shortName}
               onChange={(e) => setShortName(e.target.value)}
               placeholder="e.g. EAG"
             />
           </label>
 
-          <label className="block md:col-span-2">
+          <label className="block sm:col-span-2">
             <div className="mb-1 text-xs font-bold text-white/60">Logo (image)</div>
             <input
               type="file"
               accept="image/*"
               onChange={(e) => setLogoFile(e.target.files?.[0] || null)}
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
+              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs sm:text-sm text-white"
             />
           </label>
 
-          <div className="md:col-span-2">
+          <div className="sm:col-span-2">
             <button
               disabled={!canCreate || loading}
-              className="w-full rounded-xl bg-emerald-500/20 px-4 py-2 text-sm font-black text-emerald-200 transition hover:bg-emerald-500/30 disabled:opacity-60"
+              className="w-full rounded-xl bg-emerald-500/20 px-4 py-2 text-xs sm:text-sm font-black text-emerald-200 transition hover:bg-emerald-500/30 disabled:opacity-60"
               type="submit"
             >
               {loading ? "Working..." : "Create Team"}
@@ -161,38 +161,38 @@ export default function AdminTeamsClient({ initialTeams }: { initialTeams: Admin
         </form>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2 sm:space-y-3">
         {teams.length === 0 ? (
-          <div className="card p-6 text-sm text-white/70">No teams yet.</div>
+          <div className="card p-4 sm:p-6 text-xs sm:text-sm text-white/70">No teams yet.</div>
         ) : (
           teams.map((t) => (
-            <div key={t._id} className="card p-5 flex items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
+            <div key={t._id} className="card p-3 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+              <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/5 sm:h-12 sm:w-12">
                   {t.logoFileId ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={`/api/images/${t.logoFileId}`} alt={`${t.name} logo`} className="h-10 w-10 rounded-xl object-contain" />
+                    <img src={`/api/images/${t.logoFileId}`} alt={`${t.name} logo`} className="h-9 w-9 rounded-xl object-contain sm:h-10 sm:w-10" />
                   ) : (
                     <span className="text-xs font-black text-white/60">T</span>
                   )}
                 </div>
-                <div>
-                  <div className="text-base font-extrabold text-white">{t.name}</div>
+                <div className="min-w-0">
+                  <div className="truncate text-sm sm:text-base font-extrabold text-white">{t.name}</div>
                   <div className="text-xs text-white/60">{t.memberCount} members</div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 sm:gap-2 flex-wrap sm:flex-nowrap">
                 <Link
                   href={`/admin/teams/${t._id}`}
-                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white/90 transition hover:border-white/20 hover:bg-white/10"
+                  className="flex-1 sm:flex-none rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs sm:text-sm font-semibold text-white/90 transition hover:border-white/20 hover:bg-white/10 text-center sm:text-left"
                 >
                   Manage
                 </Link>
                 <button
                   onClick={() => onDelete(t._id)}
                   disabled={loading}
-                  className="rounded-lg border border-red-400/30 bg-red-500/10 px-3 py-2 text-sm font-semibold text-red-200 transition hover:border-red-400/50 disabled:opacity-60"
+                  className="flex-1 sm:flex-none rounded-lg border border-red-400/30 bg-red-500/10 px-3 py-2 text-xs sm:text-sm font-semibold text-red-200 transition hover:border-red-400/50 disabled:opacity-60 text-center sm:text-left"
                 >
                   Delete
                 </button>

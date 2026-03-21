@@ -7,9 +7,9 @@ export default async function TeamsPage() {
   const teams = await TeamModel.find().sort({ name: 1 }).lean();
 
   return (
-    <section className="space-y-5">
-      <h2 className="text-3xl font-black tracking-tight text-white">Teams</h2>
-      <div className="grid gap-4 md:grid-cols-3">
+    <section className="space-y-4 sm:space-y-5">
+      <h2 className="text-2xl font-black tracking-tight text-white sm:text-3xl">Teams</h2>
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
         {teams.map((t: any) => {
           const logo = t.logoFileId ? `/api/images/${String(t.logoFileId)}` : null;
           return (

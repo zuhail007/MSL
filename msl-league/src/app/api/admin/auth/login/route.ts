@@ -33,7 +33,7 @@ export async function POST(req: Request) {
   await ensureSeedAdmin();
 
   const { username, password } = parsed.data;
-  const admin = await AdminUserModel.findOne({ username }).lean();
+  const admin = (await AdminUserModel.findOne({ username }).lean()) as any;
   if (!admin) {
     return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
   }

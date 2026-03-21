@@ -11,7 +11,7 @@ export default async function AdminTeamEditPage({
   const { teamId } = await params;
   await RequireAdmin();
   await connectToDatabase();
-  const team = await TeamModel.findById(teamId).lean();
+  const team = (await TeamModel.findById(teamId).lean()) as any;
   if (!team) return <div className="card p-6 text-sm text-white/70">Team not found.</div>;
 
   const initialTeam = {

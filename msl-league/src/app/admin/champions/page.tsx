@@ -6,12 +6,14 @@ import AdminChampionsClient from "./AdminChampionsClient";
 export default async function AdminChampionsPage() {
   await RequireAdmin();
   await connectToDatabase();
+
   const teams = await TeamModel.find().sort({ name: 1 }).lean();
+
   const initialTeams = teams.map((t: any) => ({
-    _id: String(t._id),
+    id: String(t._id), // ✅ correct
     name: t.name,
     logoFileId: t.logoFileId ? String(t.logoFileId) : null,
   }));
+
   return <AdminChampionsClient initialTeams={initialTeams} />;
 }
-

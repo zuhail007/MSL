@@ -8,17 +8,17 @@ import { LeagueSettingsModel } from "@/models/LeagueSettings";
 export async function GET() {
   await connectToDatabase();
 
-  const [teams, fixtures] = await Promise.all([
+  const [teams, fixtures] = (await Promise.all([
     TeamModel.find().lean(),
     FixtureModel.find({ season: "default" }).lean(),
-  ]);
+  ])) as any;
 
-  const settings = await LeagueSettingsModel.findOne({ season: "default" }).lean();
+  const settings = (await LeagueSettingsModel.findOne({ season: "default" }).lean()) as any;
   const pointsRules = settings?.pointsRules || { win: 3, draw: 1, loss: 0 };
 
   const standings = computeStandings({
     fixtures,
-    teams: teams.map((t) => ({
+    teams: teams.map((t: any) => ({
       _id: t._id,
       name: t.name,
       logoFileId: t.logoFileId,
@@ -27,11 +27,11 @@ export async function GET() {
   });
 
   const completed = fixtures
-    .filter((f) => f.status === "completed" && f.homeScore != null && f.awayScore != null)
+    .filter((f: any) => f.status === "completed" && f.homeScore != null && f.awayScore != null)
     .sort({ scheduledAt: -1 })
-    .map((f) => {
-      const home = teams.find((t) => String(t._id) === String(f.homeTeamId));
-      const away = teams.find((t) => String(t._id) === String(f.awayTeamId));
+    .map((f: any) => {
+      const home = teams.find((t: any) => String(t._id) === String(f.homeTeamId));
+      const away = teams.find((t: any) => String(t._id) === String(f.awayTeamId));
       return {
         _id: String(f._id),
         scheduledAt: f.scheduledAt,

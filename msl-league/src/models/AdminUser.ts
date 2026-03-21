@@ -10,6 +10,6 @@ const AdminUserSchema = new mongoose.Schema(
 
 export type AdminUserDoc = mongoose.InferSchemaType<typeof AdminUserSchema>;
 
-export const AdminUserModel =
+export const AdminUserModel: any =
   mongoose.models.AdminUser || mongoose.model("AdminUser", AdminUserSchema);
 

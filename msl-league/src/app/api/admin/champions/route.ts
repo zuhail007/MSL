@@ -6,6 +6,7 @@ import { ChampionModel } from "@/models/Champion";
 import { requireAdminToken } from "@/lib/adminAccess";
 
 const UpdateChampionsSchema = z.object({
+  season: z.string().optional(),
   entries: z
     .array(
       z.object({
@@ -16,10 +17,12 @@ const UpdateChampionsSchema = z.object({
     .optional(),
 });
 
-export async function GET() {
+export async function GET(req: Request) {
   await requireAdminToken();
   await connectToDatabase();
-  const doc = await ChampionModel.findOne({ season: "default" }).lean();
+  const url = new URL(req.url);
+  const season = url.searchParams.get("season") || "default";
+  const doc = (await ChampionModel.findOne({ season }).lean()) as any;
   return NextResponse.json(
     doc
       ? {
@@ -29,7 +32,7 @@ export async function GET() {
             photoFileId: e.photoFileId ? String(e.photoFileId) : null,
           })),
         }
-      : { season: "default", entries: [] }
+      : { season, entries: [] }
   );
 }
 
@@ -46,12 +49,28 @@ export async function PUT(req: Request) {
     photoFileId: e.photoFileId ? new ObjectId(String(e.photoFileId)) : null,
   }));
 
-  const updated = await ChampionModel.findOneAndUpdate(
-    { season: "default" },
+  const updated = (await ChampionModel.findOneAndUpdate(
+    { season: parsed.data.season || "default" },
     { entries },
     { upsert: true, new: true }
-  ).lean();
+  ).lean()) as any;
 
   return NextResponse.json({ ok: true, entries: updated?.entries || [] });
+}
+
+export async function DELETE(req: Request) {
+  await requireAdminToken();
+  await connectToDatabase();
+
+  const url = new URL(req.url);
+  const season = url.searchParams.get("season") || "default";
+
+  const result = await ChampionModel.deleteOne({ season });
+
+  if (result.deletedCount === 0) {
+    return NextResponse.json({ error: "Season not found" }, { status: 404 });
+  }
+
+  return NextResponse.json({ ok: true, deletedCount: result.deletedCount });
 }
 

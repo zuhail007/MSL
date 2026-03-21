@@ -29,24 +29,30 @@ function toLocalInputValue(iso: string | null) {
   if (!iso) return "";
   const d = new Date(iso);
   const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(
+    d.getHours()
+  )}:${pad(d.getMinutes())}`;
 }
 
-export default function AdminFixturesClient({ initialTeams }: { initialTeams: TeamChoice[] }) {
+export default function AdminFixturesClient({
+  initialTeams,
+}: {
+  initialTeams: TeamChoice[];
+}) {
   const [fixtures, setFixtures] = useState<FixtureRow[]>([]);
   const [teams] = useState(initialTeams);
 
-  // create form
   const [homeTeamId, setHomeTeamId] = useState(initialTeams[0]?._id || "");
   const [awayTeamId, setAwayTeamId] = useState(initialTeams[1]?._id || "");
-  const [scheduledAt, setScheduledAt] = useState<string>(toLocalInputValue(new Date().toISOString()));
+  const [scheduledAt, setScheduledAt] = useState<string>(
+    toLocalInputValue(new Date().toISOString())
+  );
   const [status, setStatus] = useState<"scheduled" | "completed">("scheduled");
   const [homeScore, setHomeScore] = useState<string>("");
   const [awayScore, setAwayScore] = useState<string>("");
   const [creating, setCreating] = useState(false);
 
   const [editingId, setEditingId] = useState<string | null>(null);
-  const editingFixture = fixtures.find((f) => f._id === editingId) || null;
   const [editDraft, setEditDraft] = useState({
     homeTeamId: "",
     awayTeamId: "",
@@ -79,7 +85,9 @@ export default function AdminFixturesClient({ initialTeams }: { initialTeams: Te
       const payload: any = {
         homeTeamId,
         awayTeamId,
-        scheduledAt: scheduledAt ? new Date(scheduledAt).toISOString() : new Date().toISOString(),
+        scheduledAt: scheduledAt
+          ? new Date(scheduledAt).toISOString()
+          : new Date().toISOString(),
         status,
       };
       if (status === "completed") {
@@ -113,12 +121,16 @@ export default function AdminFixturesClient({ initialTeams }: { initialTeams: Te
       const payload: any = {
         homeTeamId: editDraft.homeTeamId,
         awayTeamId: editDraft.awayTeamId,
-        scheduledAt: editDraft.scheduledAt ? new Date(editDraft.scheduledAt).toISOString() : new Date().toISOString(),
+        scheduledAt: editDraft.scheduledAt
+          ? new Date(editDraft.scheduledAt).toISOString()
+          : new Date().toISOString(),
         status: editDraft.status,
       };
       if (editDraft.status === "completed") {
-        payload.homeScore = editDraft.homeScore === "" ? null : Number(editDraft.homeScore);
-        payload.awayScore = editDraft.awayScore === "" ? null : Number(editDraft.awayScore);
+        payload.homeScore =
+          editDraft.homeScore === "" ? null : Number(editDraft.homeScore);
+        payload.awayScore =
+          editDraft.awayScore === "" ? null : Number(editDraft.awayScore);
       } else {
         payload.homeScore = null;
         payload.awayScore = null;
@@ -141,7 +153,10 @@ export default function AdminFixturesClient({ initialTeams }: { initialTeams: Te
   async function onDelete(id: string) {
     if (!confirm("Delete this fixture?")) return;
     try {
-      const res = await fetch(`/api/admin/fixtures/${id}`, { method: "DELETE", credentials: "include" });
+      const res = await fetch(`/api/admin/fixtures/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
       if (!res.ok) throw new Error("Delete failed");
       await refreshFixtures(setFixtures);
     } catch (err: any) {
@@ -152,8 +167,13 @@ export default function AdminFixturesClient({ initialTeams }: { initialTeams: Te
   return (
     <section className="space-y-6">
       <div className="card p-5">
-        <h1 className="text-2xl font-black tracking-tight text-white">Fixtures / Results</h1>
-        <div className="mt-2 text-sm text-white/60">Add matches, set scores, and the league table updates from completed fixtures.</div>
+        <h1 className="text-2xl font-black tracking-tight text-white">
+          Fixtures / Results
+        </h1>
+        <div className="mt-2 text-sm text-white/60">
+          Add matches, set scores, and the league table updates from completed
+          fixtures.
+        </div>
       </div>
 
       <div className="card p-5">
@@ -187,7 +207,6 @@ export default function AdminFixturesClient({ initialTeams }: { initialTeams: Te
               ))}
             </select>
           </label>
-
           <label className="block md:col-span-2">
             <div className="mb-1 text-xs font-bold text-white/60">Scheduled Time</div>
             <input
@@ -197,7 +216,6 @@ export default function AdminFixturesClient({ initialTeams }: { initialTeams: Te
               className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
             />
           </label>
-
           <label className="block">
             <div className="mb-1 text-xs font-bold text-white/60">Status</div>
             <select
@@ -256,7 +274,9 @@ export default function AdminFixturesClient({ initialTeams }: { initialTeams: Te
         ) : (
           fixtures
             .slice()
-            .sort((a, b) => (String(a.scheduledAt || "")).localeCompare(String(b.scheduledAt || "")))
+            .sort((a, b) =>
+              String(a.scheduledAt || "").localeCompare(String(b.scheduledAt || ""))
+            )
             .reverse()
             .map((f) => (
               <div key={f._id} className="card p-5">
@@ -266,13 +286,14 @@ export default function AdminFixturesClient({ initialTeams }: { initialTeams: Te
                       <div className="text-xs font-bold uppercase tracking-wider text-white/55">
                         {f.status === "completed" ? "FINAL" : "MATCHDAY"}
                       </div>
-                      <div className="mt-1 text-base font-extrabold text-white truncate">
+                      <div className="mt-1 truncate text-base font-extrabold text-white">
                         {f.homeTeam.name} vs {f.awayTeam.name}
                       </div>
-                      <div className="text-xs text-white/60">{f.scheduledAt ? new Date(f.scheduledAt).toLocaleString() : "TBD"}</div>
+                      <div className="text-xs text-white/60">
+                        {f.scheduledAt ? new Date(f.scheduledAt).toLocaleString() : "TBD"}
+                      </div>
                     </div>
                   </div>
-
                   <div className="flex items-center gap-3">
                     {f.status === "completed" ? (
                       <div className="text-xl font-black text-emerald-300">
@@ -306,7 +327,9 @@ export default function AdminFixturesClient({ initialTeams }: { initialTeams: Te
                       <div className="mb-1 text-xs font-bold text-white/60">Home Team</div>
                       <select
                         value={editDraft.homeTeamId}
-                        onChange={(e) => setEditDraft((s) => ({ ...s, homeTeamId: e.target.value }))}
+                        onChange={(e) =>
+                          setEditDraft((s) => ({ ...s, homeTeamId: e.target.value }))
+                        }
                         className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
                       >
                         {teams.map((t) => (
@@ -320,7 +343,9 @@ export default function AdminFixturesClient({ initialTeams }: { initialTeams: Te
                       <div className="mb-1 text-xs font-bold text-white/60">Away Team</div>
                       <select
                         value={editDraft.awayTeamId}
-                        onChange={(e) => setEditDraft((s) => ({ ...s, awayTeamId: e.target.value }))}
+                        onChange={(e) =>
+                          setEditDraft((s) => ({ ...s, awayTeamId: e.target.value }))
+                        }
                         className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
                       >
                         {teams.map((t) => (
@@ -331,11 +356,15 @@ export default function AdminFixturesClient({ initialTeams }: { initialTeams: Te
                       </select>
                     </label>
                     <label className="block md:col-span-2">
-                      <div className="mb-1 text-xs font-bold text-white/60">Scheduled Time</div>
+                      <div className="mb-1 text-xs font-bold text-white/60">
+                        Scheduled Time
+                      </div>
                       <input
                         type="datetime-local"
                         value={editDraft.scheduledAt}
-                        onChange={(e) => setEditDraft((s) => ({ ...s, scheduledAt: e.target.value }))}
+                        onChange={(e) =>
+                          setEditDraft((s) => ({ ...s, scheduledAt: e.target.value }))
+                        }
                         className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
                       />
                     </label>
@@ -343,7 +372,9 @@ export default function AdminFixturesClient({ initialTeams }: { initialTeams: Te
                       <div className="mb-1 text-xs font-bold text-white/60">Status</div>
                       <select
                         value={editDraft.status}
-                        onChange={(e) => setEditDraft((s) => ({ ...s, status: e.target.value as any }))}
+                        onChange={(e) =>
+                          setEditDraft((s) => ({ ...s, status: e.target.value as any }))
+                        }
                         className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
                       >
                         <option value="scheduled">Scheduled</option>
@@ -357,7 +388,9 @@ export default function AdminFixturesClient({ initialTeams }: { initialTeams: Te
                           <input
                             type="number"
                             value={editDraft.homeScore}
-                            onChange={(e) => setEditDraft((s) => ({ ...s, homeScore: e.target.value }))}
+                            onChange={(e) =>
+                              setEditDraft((s) => ({ ...s, homeScore: e.target.value }))
+                            }
                             className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
                           />
                         </label>
@@ -366,7 +399,9 @@ export default function AdminFixturesClient({ initialTeams }: { initialTeams: Te
                           <input
                             type="number"
                             value={editDraft.awayScore}
-                            onChange={(e) => setEditDraft((s) => ({ ...s, awayScore: e.target.value }))}
+                            onChange={(e) =>
+                              setEditDraft((s) => ({ ...s, awayScore: e.target.value }))
+                            }
                             className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
                           />
                         </label>
@@ -376,8 +411,11 @@ export default function AdminFixturesClient({ initialTeams }: { initialTeams: Te
                         Mark as <b>Completed</b> to enter scores.
                       </div>
                     )}
-                    <div className="md:col-span-2 flex gap-2">
-                      <button type="submit" className="flex-1 rounded-xl bg-sky-500/20 px-4 py-2 text-sm font-black text-sky-200 transition hover:bg-sky-500/30">
+                    <div className="flex gap-2 md:col-span-2">
+                      <button
+                        type="submit"
+                        className="flex-1 rounded-xl bg-sky-500/20 px-4 py-2 text-sm font-black text-sky-200 transition hover:bg-sky-500/30"
+                      >
                         Save
                       </button>
                       <button

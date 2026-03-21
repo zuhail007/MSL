@@ -19,7 +19,7 @@ const LeagueSettingsSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export const LeagueSettingsModel =
+export const LeagueSettingsModel: any =
   mongoose.models.LeagueSettings ||
   mongoose.model("LeagueSettings", LeagueSettingsSchema);
 

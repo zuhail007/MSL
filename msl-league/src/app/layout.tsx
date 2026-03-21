@@ -19,8 +19,8 @@ export default function RootLayout({
       <body>
         <div className="min-h-screen">
           <TopNav />
-          <main className="mx-auto max-w-6xl px-4 py-8">{children}</main>
-          <footer className="mx-auto max-w-6xl px-4 pb-10 pt-2 text-center text-sm text-white/60">
+          <main className="mx-auto max-w-6xl px-3 py-4 sm:px-4 sm:py-8">{children}</main>
+          <footer className="mx-auto max-w-6xl px-3 py-3 sm:px-4 sm:pb-10 sm:pt-2 text-center text-xs sm:text-sm text-white/60">
             MSL League • Admin-managed • Built for match days
           </footer>
         </div>
