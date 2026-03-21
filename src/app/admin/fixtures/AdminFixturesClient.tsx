@@ -184,7 +184,7 @@ export default function AdminFixturesClient({
             <select
               value={homeTeamId}
               onChange={(e) => setHomeTeamId(e.target.value)}
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
+              className="w-full rounded-xl border border-orange-400/60 bg-orange-900/60 px-3 py-2 text-sm text-white"
             >
               {teams.map((t) => (
                 <option key={t._id} value={t._id}>
@@ -198,7 +198,7 @@ export default function AdminFixturesClient({
             <select
               value={awayTeamId}
               onChange={(e) => setAwayTeamId(e.target.value)}
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
+              className="w-full rounded-xl border border-orange-400/60 bg-orange-900/60 px-3 py-2 text-sm text-white"
             >
               {teams.map((t) => (
                 <option key={t._id} value={t._id}>
@@ -221,7 +221,7 @@ export default function AdminFixturesClient({
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value as any)}
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
+              className="w-full rounded-xl border border-orange-400/60 bg-orange-900/60 px-3 py-2 text-sm text-white"
             >
               <option value="scheduled">Scheduled</option>
               <option value="completed">Completed</option>
@@ -330,7 +330,7 @@ export default function AdminFixturesClient({
                         onChange={(e) =>
                           setEditDraft((s) => ({ ...s, homeTeamId: e.target.value }))
                         }
-                        className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
+                        className="w-full rounded-xl border border-orange-400/60 bg-orange-900/60 px-3 py-2 text-sm text-white"
                       >
                         {teams.map((t) => (
                           <option key={t._id} value={t._id}>
@@ -346,7 +346,7 @@ export default function AdminFixturesClient({
                         onChange={(e) =>
                           setEditDraft((s) => ({ ...s, awayTeamId: e.target.value }))
                         }
-                        className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
+                        className="w-full rounded-xl border border-orange-400/60 bg-orange-900/60 px-3 py-2 text-sm text-white"
                       >
                         {teams.map((t) => (
                           <option key={t._id} value={t._id}>
@@ -375,7 +375,7 @@ export default function AdminFixturesClient({
                         onChange={(e) =>
                           setEditDraft((s) => ({ ...s, status: e.target.value as any }))
                         }
-                        className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
+                        className="w-full rounded-xl border border-orange-400/60 bg-orange-900/60 px-3 py-2 text-sm text-white"
                       >
                         <option value="scheduled">Scheduled</option>
                         <option value="completed">Completed</option>

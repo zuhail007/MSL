@@ -146,7 +146,7 @@ export default function AdminTeamsClient({ initialTeams }: { initialTeams: Admin
           <label className="block">
             <div className="mb-1 text-xs font-bold text-white/60">Group</div>
             <select
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-white/20"
+              className="w-full rounded-xl border border-orange-400/60 bg-orange-900/60 px-3 py-2 text-sm text-white outline-none focus:border-orange-400/80"
               value={group}
               onChange={(e) => setGroup(e.target.value)}
             >

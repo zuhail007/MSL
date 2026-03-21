@@ -170,7 +170,7 @@ export default function AdminChampionsClient({
           <select
             value={selectedTeam}
             onChange={(e) => setSelectedTeam(e.target.value)}
-            className="bg-gray-800 text-white border border-gray-600 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="bg-orange-900/60 text-white border border-orange-400/60 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
           >
             <option value="" className="text-gray-400">
               Select Team

@@ -442,7 +442,7 @@ export default function AdminTeamEditClient({ initialTeam }: { initialTeam: Team
                   <select
                     value={editForm.role}
                     onChange={(e) => setEditForm((s) => ({ ...s, role: e.target.value as TeamMemberRole }))}
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
+                    className="w-full rounded-xl border border-orange-400/60 bg-orange-900/60 px-3 py-2 text-sm text-white"
                   >
                     <option value="player">Player</option>
                     <option value="keyplayer">Key Player</option>
