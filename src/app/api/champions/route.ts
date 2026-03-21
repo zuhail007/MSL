@@ -1,28 +1,40 @@
 import { NextResponse } from "next/server";
-import { connectToDatabase } from "@/lib/mongoose";
+import mongoose from "mongoose";
 import { ChampionModel } from "@/models/Champion";
-import { TeamModel } from "@/models/Team";
 
-export async function GET() {
-  await connectToDatabase();
+const MONGO_URI = process.env.MONGODB_URI!;
 
-  const championDoc = (await ChampionModel.findOne({ season: "default" }).lean()) as any;
-  if (!championDoc) return NextResponse.json({ entries: [] });
-
-  const entryTeamIds = championDoc.entries.map((e: any) => String(e.teamId));
-  const teams = await TeamModel.find({ _id: { $in: entryTeamIds } }).lean();
-  const teamById = new Map(teams.map((t: any) => [String(t._id), t] as const));
-
-  const entries = championDoc.entries.map((e: any) => {
-    const team = teamById.get(String(e.teamId));
-    return {
-      teamId: String(e.teamId),
-      teamName: team?.name || "Unknown",
-      logoFileId: team?.logoFileId ? String(team.logoFileId) : null,
-      championPhotoFileId: e.photoFileId ? String(e.photoFileId) : null,
-    };
-  });
-
-  return NextResponse.json({ entries });
+async function connectDB() {
+  if (mongoose.connection.readyState === 0) {
+    await mongoose.connect(MONGO_URI);
+  }
 }
 
+export async function GET() {
+  try {
+    await connectDB();
+
+    const champions = await ChampionModel.find()
+      .populate("entries.teamId");
+
+    return NextResponse.json(champions);
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: "GET failed" }, { status: 500 });
+  }
+}
+
+export async function POST(req: Request) {
+  try {
+    await connectDB();
+
+    const body = await req.json();
+
+    const newChampion = await ChampionModel.create(body);
+
+    return NextResponse.json(newChampion);
+  } catch (err) {
+    console.error("POST ERROR:", err);
+    return NextResponse.json({ error: "POST failed" }, { status: 500 });
+  }
+}
