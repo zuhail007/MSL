@@ -1,6 +1,7 @@
 import { connectToDatabase } from "@/lib/mongoose";
 import { FixtureModel } from "@/models/Fixture";
 import { TeamModel } from "@/models/Team";
+import LocalDateTime from "@/components/LocalDateTime";
 
 export default async function FixturesPage() {
   await connectToDatabase();
@@ -21,10 +22,6 @@ export default async function FixturesPage() {
           fixtures.map((f: any) => {
             const home = teamById.get(String(f.homeTeamId));
             const away = teamById.get(String(f.awayTeamId));
-
-            const scheduled = f.scheduledAt
-              ? new Date(f.scheduledAt).toLocaleString()
-              : "TBD";
 
             const isDone = f.status === "completed";
 
@@ -56,7 +53,9 @@ export default async function FixturesPage() {
                     <div className="text-xs font-bold uppercase tracking-wider text-white/55">
                       {isDone ? "FINAL" : "SCHEDULED"}
                     </div>
-                    <div className="mt-1 text-xs sm:text-sm text-white/70">{scheduled}</div>
+                    <div className="mt-1 text-xs sm:text-sm text-white/70">
+                      <LocalDateTime value={f.scheduledAt ? String(f.scheduledAt) : null} />
+                    </div>
                     {isDone ? (
                       <div className="mt-2 text-xl font-black text-emerald-300 sm:text-2xl">
                         {f.homeScore} : {f.awayScore}
