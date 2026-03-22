@@ -5,44 +5,49 @@ import { LeagueSettingsModel } from "@/models/LeagueSettings";
 import { computeStandings } from "@/lib/standings";
 
 export default async function GroupsPage() {
-  await connectToDatabase();
+  try {
+    await connectToDatabase();
 
-  const [teams, fixtures, settings] = await Promise.all([
-    TeamModel.find().sort({ name: 1 }).lean(),
-    FixtureModel.find({ season: "default", stage: "group" }).lean(),
-    LeagueSettingsModel.findOne({ season: "default" }).lean(),
-  ]) as any;
+    const [rawTeams, rawFixtures, settings] = (await Promise.all([
+      TeamModel.find().sort({ name: 1 }).lean(),
+      FixtureModel.find({ season: "default", stage: "group" }).lean(),
+      LeagueSettingsModel.findOne({ season: "default" }).lean(),
+    ])) as any;
 
-  const pointsRules = settings?.pointsRules || { win: 3, draw: 1, loss: 0 };
+    const teams = Array.isArray(rawTeams) ? rawTeams : [];
+    const fixtures = Array.isArray(rawFixtures) ? rawFixtures : [];
+    const pointsRules = settings?.pointsRules || { win: 3, draw: 1, loss: 0 };
 
-  // Group teams by their group field and keep only populated groups.
-  const groupMap = new Map<string, typeof teams>();
-  for (const t of teams) {
-    const normalizedGroup = String(t.group || "A").trim().toUpperCase();
-    const key = normalizedGroup.length > 0 ? normalizedGroup : "A";
-    if (!groupMap.has(key)) groupMap.set(key, []);
-    groupMap.get(key)!.push(t);
-  }
+    // Group teams by their group field and keep only populated groups.
+    const groupMap = new Map<string, any[]>();
+    for (const t of teams) {
+      const normalizedGroup = String(t?.group || "A").trim().toUpperCase();
+      const key = normalizedGroup.length > 0 ? normalizedGroup : "A";
+      if (!groupMap.has(key)) groupMap.set(key, []);
+      groupMap.get(key)!.push(t);
+    }
 
-  // Sort groups alphabetically
-  const sortedGroups = new Map(
-    [...groupMap.entries()].filter(([, groupedTeams]) => groupedTeams.length > 0).sort()
-  );
+    // Sort groups alphabetically and exclude empty groups.
+    const sortedGroups = new Map(
+      [...groupMap.entries()]
+        .filter(([, groupedTeams]) => Array.isArray(groupedTeams) && groupedTeams.length > 0)
+        .sort((a, b) => a[0].localeCompare(b[0]))
+    );
 
-  // Calculate standings for each group
-  const groupStandingsMap = new Map<string, any>();
-  for (const [group, groupTeams] of sortedGroups.entries()) {
-    const standings = computeStandings({
-      fixtures,
-      teams: groupTeams.map((t: any) => ({
-        _id: t._id,
-        name: t.name,
-        logoFileId: t.logoFileId,
-      })),
-      pointsRules,
-    });
-    groupStandingsMap.set(group, standings);
-  }
+    // Calculate standings for each group.
+    const groupStandingsMap = new Map<string, any[]>();
+    for (const [group, groupTeams] of sortedGroups.entries()) {
+      const standings = computeStandings({
+        fixtures,
+        teams: groupTeams.map((t: any) => ({
+          _id: t._id,
+          name: t.name,
+          logoFileId: t.logoFileId,
+        })),
+        pointsRules,
+      });
+      groupStandingsMap.set(group, Array.isArray(standings) ? standings : []);
+    }
 
   return (
     <section className="space-y-5 sm:space-y-7">
@@ -158,5 +163,16 @@ export default async function GroupsPage() {
         </div>
       )}
     </section>
-  );
+    );
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return (
+      <section className="space-y-5 sm:space-y-7">
+        <div>
+          <h1 className="text-2xl font-black tracking-tight text-white sm:text-3xl">Groups</h1>
+          <p className="mt-1 text-sm text-red-300">Error loading groups: {message}</p>
+        </div>
+      </section>
+    );
+  }
 }
