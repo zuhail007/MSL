@@ -10,6 +10,7 @@ const TeamUpdateSchema = z.object({
   name: z.string().min(1).optional(),
   shortName: z.string().optional(),
   logoFileId: z.string().nullable().optional(),
+  group: z.string().optional(),
 });
 
 function mapTeam(t: any) {
@@ -55,6 +56,7 @@ export async function PATCH(
   const update: any = {};
   if (parsed.data.name !== undefined) update.name = parsed.data.name;
   if (parsed.data.shortName !== undefined) update.shortName = parsed.data.shortName;
+  if (parsed.data.group !== undefined) update.group = parsed.data.group;
   if (parsed.data.logoFileId !== undefined) {
     update.logoFileId =
       parsed.data.logoFileId === null ? null : new ObjectId(String(parsed.data.logoFileId));
