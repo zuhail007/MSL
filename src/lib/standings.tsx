@@ -36,10 +36,7 @@ export function computeStandings(args: {
   const { fixtures, teams, pointsRules } = args;
   const winPoints = pointsRules?.win ?? 3;
   const drawPoints = pointsRules?.draw ?? 1;
-  // lossPoints is currently unused because we sort by points; still included for completeness.
   const _lossPoints = pointsRules?.loss ?? 0;
-  const byId = new Map<string, (typeof teams)[number]>();
-  for (const t of teams) byId.set(String(t._id), t);
 
   const rows = new Map<string, StandingRow>();
   for (const t of teams) {
@@ -63,27 +60,24 @@ export function computeStandings(args: {
 
   for (const f of fixtures) {
     if (!isCompleted(f)) continue;
-
     const homeId = String(f.homeTeamId);
     const awayId = String(f.awayTeamId);
     const home = rows.get(homeId);
     const away = rows.get(awayId);
     if (!home || !away) continue;
-
     const hs = f.homeScore as number;
-    const as = f.awayScore as number;
+    const as_ = f.awayScore as number;
     home.played += 1;
     away.played += 1;
     home.gf += hs;
-    home.ga += as;
-    away.gf += as;
+    home.ga += as_;
+    away.gf += as_;
     away.ga += hs;
-
-    if (hs > as) {
+    if (hs > as_) {
       home.won += 1;
       away.lost += 1;
       home.points += winPoints;
-    } else if (hs < as) {
+    } else if (hs < as_) {
       away.won += 1;
       home.lost += 1;
       away.points += winPoints;
@@ -95,19 +89,30 @@ export function computeStandings(args: {
     }
   }
 
-  const result: StandingRow[] = [];
   for (const row of rows.values()) {
     row.gd = row.gf - row.ga;
-    result.push(row);
   }
 
-  result.sort((a, b) => {
-    if (b.points !== a.points) return b.points - a.points;
-    if (b.gd !== a.gd) return b.gd - a.gd;
-    if (b.gf !== a.gf) return b.gf - a.gf;
-    return a.teamName.localeCompare(b.teamName);
-  });
+  // Group teams by their 'group' field
+  const groupMap = new Map<string, StandingRow[]>();
+  for (const t of teams) {
+    const groupKey = t.group ?? "A";
+    const row = rows.get(String(t._id));
+    if (!row) continue;
+    if (!groupMap.has(groupKey)) groupMap.set(groupKey, []);
+    groupMap.get(groupKey)!.push(row);
+  }
 
-  return result;
+  // Sort each group's standings
+  for (const [, standings] of groupMap) {
+    standings.sort((a, b) => {
+      if (b.points !== a.points) return b.points - a.points;
+      if (b.gd !== a.gd) return b.gd - a.gd;
+      if (b.gf !== a.gf) return b.gf - a.gf;
+      return a.teamName.localeCompare(b.teamName);
+    });
+  }
+
+  // Return sorted by group name (A, B, C...)
+  return new Map([...groupMap.entries()].sort());
 }
-

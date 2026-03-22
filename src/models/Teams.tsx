@@ -31,6 +31,7 @@ const TeamSchema = new mongoose.Schema(
     name: { type: String, required: true, trim: true },
     shortName: { type: String, trim: true, default: "" },
     logoFileId: { type: mongoose.Schema.Types.ObjectId, default: null },
+    group: { type: String, trim: true, default: "A" },
     members: { type: [TeamMemberSchema], default: [] },
   },
   { timestamps: true }
@@ -40,4 +41,3 @@ export const TeamModel: any =
   mongoose.models.Team || mongoose.model("Team", TeamSchema);
 
 export { TeamSchema };
-

@@ -25,6 +25,7 @@ export default function RootLayout({
           </footer>
         </div>
       </body>
+      <a href="/groups">Groups</a>
     </html>
   );
 }
