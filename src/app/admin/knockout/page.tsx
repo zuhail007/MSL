@@ -4,6 +4,7 @@ import { RequireAdmin } from "@/components/RequireAdmin";
 import AdminKnockoutClient from "./AdminKnockoutClient";
 
 export default async function AdminKnockoutPage() {
+  await RequireAdmin();
   await connectToDatabase();
   const teams = (await TeamModel.find().sort({ name: 1 }).lean()) as any[];
 
@@ -13,9 +14,5 @@ export default async function AdminKnockoutPage() {
     logoFileId: t.logoFileId ? String(t.logoFileId) : null,
   }));
 
-  return (
-    <RequireAdmin>
-      <AdminKnockoutClient initialTeams={teamChoices} />
-    </RequireAdmin>
-  );
+  return <AdminKnockoutClient initialTeams={teamChoices} />;
 }
