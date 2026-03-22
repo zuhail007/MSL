@@ -35,6 +35,7 @@ export default function AdminLayout({
             <Link className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white/90 transition hover:border-white/20 hover:bg-white/10" href="/admin/dashboard">Dashboard</Link>
             <Link className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white/90 transition hover:border-white/20 hover:bg-white/10" href="/admin/teams">Teams</Link>
             <Link className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white/90 transition hover:border-white/20 hover:bg-white/10" href="/admin/fixtures">Fixtures / Results</Link>
+            <Link className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white/90 transition hover:border-white/20 hover:bg-white/10" href="/admin/knockout">Knockout Bracket</Link>
             <Link className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white/90 transition hover:border-white/20 hover:bg-white/10" href="/admin/champions">Champions</Link>
             <Link className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white/90 transition hover:border-white/20 hover:bg-white/10" href="/admin/settings">League Settings</Link>
             <button
