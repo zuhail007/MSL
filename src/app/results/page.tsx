@@ -6,15 +6,19 @@ import { LeagueSettingsModel } from "@/models/LeagueSettings";
 
 export default async function ResultsPage() {
   await connectToDatabase();
-  const [teams, fixtures] = (await Promise.all([TeamModel.find().lean(), FixtureModel.find({ season: "default" }).lean()])) as any;
+  const [teams, allFixtures] = (await Promise.all([TeamModel.find().lean(), FixtureModel.find({ season: "default" }).lean()])) as any;
   const settings = (await LeagueSettingsModel.findOne({ season: "default" }).lean()) as any;
   const pointsRules = settings?.pointsRules || { win: 3, draw: 1, loss: 0 };
+  
+  // Filter to only group stage fixtures
+  const fixtures = allFixtures.filter((f: any) => !f.stage || f.stage === "group");
+  
   const groupNames: string[] = [...new Set(teams.map((t: any) => t.group || "A"))].sort() as string[];
   const groupStandings = groupNames.map((group: string) => ({
     group,
     standings: computeStandings({ fixtures, teams: teams.filter((t: any) => (t.group || "A") === group).map((t: any) => ({ _id: t._id, name: t.name, logoFileId: t.logoFileId })), pointsRules }),
   }));
-  const completed = fixtures.filter((f: any) => f.status === "completed" && f.homeScore != null && f.awayScore != null).sort((a: any, b: any) => String(b._id).localeCompare(String(a._id)));
+  const completed = allFixtures.filter((f: any) => f.status === "completed" && f.homeScore != null && f.awayScore != null).sort((a: any, b: any) => String(b._id).localeCompare(String(a._id)));
   return (
     <section className="space-y-5 sm:space-y-7">
       <h1 className="text-2xl font-black tracking-tight text-white sm:text-3xl">Results</h1>
