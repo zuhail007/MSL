@@ -11,6 +11,8 @@ const FixtureSchema = new mongoose.Schema(
     status: { type: String, enum: ["scheduled", "completed"], default: "scheduled" },
     homeScore: { type: Number, default: null },
     awayScore: { type: Number, default: null },
+    stage: { type: String, enum: ["group", "knockout"], default: "group" },
+    round: { type: String, default: null }, // e.g. "Quarter-Final", "Semi-Final", "Final"
   },
   { timestamps: true }
 );
