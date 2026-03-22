@@ -15,16 +15,19 @@ export default async function GroupsPage() {
 
   const pointsRules = settings?.pointsRules || { win: 3, draw: 1, loss: 0 };
 
-  // Group teams by their group field
+  // Group teams by their group field and keep only populated groups.
   const groupMap = new Map<string, typeof teams>();
   for (const t of teams) {
-    const key = t.group || "A";
+    const normalizedGroup = String(t.group || "A").trim().toUpperCase();
+    const key = normalizedGroup.length > 0 ? normalizedGroup : "A";
     if (!groupMap.has(key)) groupMap.set(key, []);
     groupMap.get(key)!.push(t);
   }
 
   // Sort groups alphabetically
-  const sortedGroups = new Map([...groupMap.entries()].sort());
+  const sortedGroups = new Map(
+    [...groupMap.entries()].filter(([, groupedTeams]) => groupedTeams.length > 0).sort()
+  );
 
   // Calculate standings for each group
   const groupStandingsMap = new Map<string, any>();

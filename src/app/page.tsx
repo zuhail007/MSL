@@ -27,10 +27,14 @@ export default async function HomePage() {
         <p className="mt-5 leading-relaxed text-white/85">{settings.about}</p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
         <Link className="card p-5 transition hover:shadow-glow" href="/teams">
           <div className="text-sm font-semibold text-white/70">Teams</div>
           <div className="mt-2 text-xl font-black text-white">Meet the squads</div>
+        </Link>
+        <Link className="card p-5 transition hover:shadow-glow" href="/group">
+          <div className="text-sm font-semibold text-white/70">Groups</div>
+          <div className="mt-2 text-xl font-black text-white">Group-wise teams</div>
         </Link>
         <Link className="card p-5 transition hover:shadow-glow" href="/fixtures">
           <div className="text-sm font-semibold text-white/70">Fixtures</div>
